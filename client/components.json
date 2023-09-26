@@ -2,9 +2,10 @@
   "$schema": "https://ui.shadcn.com/schema.json",
   "style": "default",
   "rsc": false,
+  "tsx": true,
   "tailwind": {
     "config": "tailwind.config.js",
-    "css": "app/globals.css",
+    "css": "src/styles/globals.css",
     "baseColor": "slate",
     "cssVariables": false
   },

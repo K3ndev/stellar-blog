@@ -11,31 +11,35 @@ export default function Login() {
     event.preventDefault();
     // router.push("/");
 
-    try {
-      const response = await fetch('http://localhost:1337/auth/local', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          identifier: email,
-          password: password,
-        }),
-      });
+    console.log({email: email, password: password})
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+    // use lucia here
 
-      const data = await response.json();
-      console.log('User profile', data.user);
-      console.log('User token', data.jwt);
+    // try {
+    //   const response = await fetch('http://localhost:1337/auth/local', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //       identifier: email,
+    //       password: password,
+    //     }),
+    //   });
+
+    //   if (!response.ok) {
+    //     throw new Error(`HTTP error! Status: ${response.status}`);
+    //   }
+
+    //   const data = await response.json();
+    //   console.log('User profile', data.user);
+    //   console.log('User token', data.jwt);
       
-      // Redirect or perform other actions upon successful login
-      router.push("/"); // Redirect to the home page after successful login
-    } catch (error) {
-      console.log('An error occurred:', error);
-    }
+    //   // Redirect or perform other actions upon successful login
+    //   router.push("/"); // Redirect to the home page after successful login
+    // } catch (error) {
+    //   console.log('An error occurred:', error);
+    // }
 
   };
 
