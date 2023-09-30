@@ -28,4 +28,16 @@ export const resolvers = {
     Query: {
         blogs: () => blogs,
     },
+    Mutation: {
+        createBlog: (_, { input }) => {
+
+            const newBlog = {
+                id: (blogs.length + 1).toString(),
+                attributes: input,
+            };
+
+            blogs.push(newBlog);
+            return newBlog;
+        },
+    },
 };
