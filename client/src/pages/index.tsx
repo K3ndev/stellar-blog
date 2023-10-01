@@ -5,18 +5,16 @@ import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 
 const BLOGS_QUERY = gql`
-  query {
+  query blogs{
     blogs {
-      data {
-        id
-        attributes {
-          title
-          rating
-          body
-          createdAt
-          updatedAt
-          publishedAt
-        }
+      id,
+      attributes {
+        body,
+        createdAt,
+        publishedAt,
+        updatedAt,
+        rating,
+        title
       }
     }
   }
@@ -24,29 +22,28 @@ const BLOGS_QUERY = gql`
 
 const CREATE_BLOG = gql`
   mutation CreateBlog(
-    $title: String!
-    $body: String!
-    $rating: Int!
-    $publishedAt: DateTime!
+    $title: String!,
+    $body: String!,
+    $rating: Float!,
+    $createdAt: DateTime!,
+    $updatedAt: DateTime!,
   ) {
     createBlog(
-      data: {
-        title: $title
-        body: $body
-        rating: $rating
-        publishedAt: $publishedAt
+      input: {
+        title: $title,
+        body: $body,
+        rating: $rating,
+        createdAt: $createdAt,
+        updatedAt: $updatedAt
       }
     ) {
-      data {
-        id
-        attributes {
-          title
-          rating
-          body
-          createdAt
-          updatedAt
-          publishedAt
-        }
+      attributes {
+        body,
+        createdAt,
+        publishedAt,
+        updatedAt,
+        rating,
+        title
       }
     }
   }
@@ -87,7 +84,8 @@ export default function Home() {
           title,
           body: message,
           rating,
-          publishedAt: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         },
         refetchQueries: [{ query: BLOGS_QUERY }],
       });
@@ -101,6 +99,8 @@ export default function Home() {
     }
   };
 
+  console.log(data)
+
   return (
     <Layout>
       <section className="mx-auto max-w-[872px] w-full">
@@ -108,7 +108,7 @@ export default function Home() {
         <div className="text-neutral-400">
           {data &&
             !loading &&
-            data.blogs.data.map((item: any, index: number) => {
+            data.blogs.map((item: any, index: number) => {
               return (
                 <div key={index} className="border-t border-neutral-700 py-4">
                   <div className="flex gap-5 items-start justify-between mb-3">
