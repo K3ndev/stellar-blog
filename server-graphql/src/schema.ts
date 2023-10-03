@@ -1,4 +1,3 @@
-import { GraphQLDateTime } from "graphql-scalars";
 
 export const typeDefs = `#graphql
 
@@ -6,10 +5,6 @@ export const typeDefs = `#graphql
 
   type Blog {
     id: Int
-    attributes: BlogAttributes!
-  }
-
-  type BlogAttributes {
     title: String!
     rating: Int
     body: String

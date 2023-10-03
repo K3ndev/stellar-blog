@@ -9,6 +9,8 @@ const createApolloServer = () => {
     return new ApolloServer({
         typeDefs,
         resolvers,
+        // this should disable for security purpose but autosuggest is also disable
+        introspection: false
     });
 };
 
