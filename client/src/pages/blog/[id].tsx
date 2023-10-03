@@ -5,56 +5,60 @@ import ReactMarkdown from "react-markdown";
 import { useState, useEffect } from "react";
 
 const GET_SINGLE_BLOG = gql`
-  query GetSingleBlog($id: ID!) {
-    blog(id: $id) {
-      data {
-        id
-        attributes {
-          title
-          rating
-          body
-          publishedAt
-        }
+  query getSingleBlog($id: Int!) {
+    getSingleBlog(id: $id) {
+      id
+      attributes {
+        body
+        createdAt
+        updatedAt
+        rating
+        title
       }
     }
   }
 `;
 
-const DELETE_SINGLE_BLOG = gql`
-  mutation DeleteBlog($id: ID!) {
-    deleteBlog(id: $id) {
-      data {
-        id
-        attributes {
-          title
-          rating
-          body
-          createdAt
-          updatedAt
-          publishedAt
-        }
-      }
-    }
-  }
-`;
 
-const UPDATE_SINGLE_BLOG = gql`
-  mutation UpdateBlog($id: ID!, $data: BlogInput!) {
-    updateBlog(id: $id, data: $data) {
-      data {
-        id
-        attributes {
-          title
-          rating
-          body
-          createdAt
-          updatedAt
-          publishedAt
-        }
-      }
-    }
-  }
-`;
+// const DELETE_SINGLE_BLOG = gql`
+//   mutation DeleteBlog($id: Int) {
+//     deleteBlog(id: $id) {
+//       data {
+//         id
+//         attributes {
+//           title
+//           rating
+//           body
+//           createdAt
+//           updatedAt
+//           publishedAt
+//         }
+//       }
+//     }
+//   }
+// `;
+
+// const UPDATE_SINGLE_BLOG = gql`
+//   mutation updateBlog(
+//     $title: String!,
+//     $body: String!,
+//     $rating: Int!,
+//   ) {
+//     updateBlog(
+//       input: {
+//         title: $title,
+//         body: $body,
+//         rating: $rating,
+//       }
+//     ) {
+//       attributes {
+//         body,
+//         rating,
+//         title
+//       }
+//     }
+//   }
+// `;
 
 export default function Page() {
   const router = useRouter();
@@ -72,42 +76,41 @@ export default function Page() {
 
   // for a single blog
   const { data, loading, error } = useQuery(GET_SINGLE_BLOG, {
-    variables: { id: idFromPath() },
+    variables: { id: +idFromPath() },
   });
+
 
   // for deleting a blog
-  const [deleteBlog] = useMutation(DELETE_SINGLE_BLOG, {
-    variables: { id: idFromPath() },
-    // onError: (err) => {
-    //   console.error(err);
-    // },
-    onCompleted: () => {
-      router.push("/");
-    },
-  });
+  // const [deleteBlog] = useMutation(DELETE_SINGLE_BLOG, {
+  //   variables: { id: idFromPath() },
+  //   // onError: (err) => {
+  //   //   console.error(err);
+  //   // },
+  //   onCompleted: () => {
+  //     router.push("/");
+  //   },
+  // });
 
   // for updating a blog
-  const [updateBlog] = useMutation(UPDATE_SINGLE_BLOG, {
-    variables: {
-      id: idFromPath(),
-      data: {
-        title: titleInputState,
-        body: bodyInputState,
-      },
-    },
-    refetchQueries: [
-      { query: GET_SINGLE_BLOG, variables: { id: idFromPath() } },
-    ],
-    onCompleted: () => {
-      setIsEdit(false);
-    },
-  });
+  // const [updateBlog] = useMutation(UPDATE_SINGLE_BLOG, {
+  //   variables: {
+  //     title: titleInputState,
+  //     body: bodyInputState,
+  //     rating: 5, // Change this to the desired rating value
+  //   },
+  //   refetchQueries: [
+  //     { query: GET_SINGLE_BLOG, variables: { id: +idFromPath() } },
+  //   ],
+  //   onCompleted: () => {
+  //     setIsEdit(false);
+  //   },
+  // });
 
   useEffect(() => {
     console.log("effect parent run");
-    if (data?.blog?.data?.attributes?.title) {
-      setTitleInputState(data.blog.data.attributes.title);
-      setBodyInputState(data.blog.data.attributes.body);
+    if (data?.getSingleBlog.attributes) {
+      setTitleInputState(data?.getSingleBlog.attributes.title);
+      setBodyInputState(data?.getSingleBlog.attributes.body);
       console.log("effect children run");
     }
   }, [data]);
@@ -144,7 +147,7 @@ export default function Page() {
               <button
                 className="bg-red-500 px-2 py-1 text-white"
                 onClick={() => {
-                  deleteBlog();
+                  // deleteBlog();
                 }}
               >
                 Delete
@@ -161,7 +164,7 @@ export default function Page() {
                 disabled={!isEdit}
                 className="bg-blue-500 px-2 py-1 text-white"
                 onClick={() => {
-                  updateBlog();
+                  // updateBlog();
                 }}
               >
                 Save
@@ -185,7 +188,7 @@ export default function Page() {
                       <h3>{titleInputState}</h3>
                     )}
                   </div>
-                  <p>{data?.blog?.data?.attributes?.publishedAt}</p>
+                  <p>{data?.getSingleBlog.attributes.updatedAt}</p>
                 </div>
               )}
               {isEdit ? (

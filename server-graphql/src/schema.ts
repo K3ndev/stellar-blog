@@ -5,36 +5,40 @@ export const typeDefs = `#graphql
  scalar DateTime
 
   type Blog {
-    id: ID!
+    id: Int
     attributes: BlogAttributes!
   }
 
   type BlogAttributes {
     title: String!
-    rating: Float
+    rating: Int
     body: String
     createdAt: DateTime
     updatedAt: DateTime
-    publishedAt: DateTime
   }
 
-  # 1
   type Query {
     blogs: [Blog!]!
+    getSingleBlog(id: Int!): Blog
   }
 
-  input BlogInput {
+  input BlogCreateInput {
+    title: String!
+    rating: Int
+    body: String
+    createdAt: DateTime
+    updatedAt: DateTime
+  }
+
+  input BlogUpdateInput {
     title: String!
     rating: Float
     body: String
-    createdAt: DateTime
-    updatedAt: DateTime
   }
 
-  # 2
   type Mutation {
-    createBlog(input: BlogInput!): Blog
+    createBlog(input: BlogCreateInput!): Blog
+    updateBlog(input: BlogUpdateInput!, id: Int!): Blog
+    deleteBlog(id: Int!): [Blog!]
   }
 `;
-
-// todo! make an enum for rating 1 to 10

@@ -11,7 +11,6 @@ const BLOGS_QUERY = gql`
       attributes {
         body,
         createdAt,
-        publishedAt,
         updatedAt,
         rating,
         title
@@ -24,7 +23,7 @@ const CREATE_BLOG = gql`
   mutation CreateBlog(
     $title: String!,
     $body: String!,
-    $rating: Float!,
+    $rating: Int!,
     $createdAt: DateTime!,
     $updatedAt: DateTime!,
   ) {
@@ -40,7 +39,6 @@ const CREATE_BLOG = gql`
       attributes {
         body,
         createdAt,
-        publishedAt,
         updatedAt,
         rating,
         title
