@@ -8,13 +8,11 @@ const BLOGS_QUERY = gql`
   query blogs{
     blogs {
       id,
-      attributes {
-        body,
-        createdAt,
-        updatedAt,
-        rating,
-        title
-      }
+      body,
+      createdAt,
+      updatedAt,
+      rating,
+      title
     }
   }
 `;
@@ -36,13 +34,11 @@ const CREATE_BLOG = gql`
         updatedAt: $updatedAt
       }
     ) {
-      attributes {
-        body,
-        createdAt,
-        updatedAt,
-        rating,
-        title
-      }
+      body,
+      createdAt,
+      updatedAt,
+      rating,
+      title
     }
   }
 `;
@@ -97,8 +93,6 @@ export default function Home() {
     }
   };
 
-  console.log(data)
-
   return (
     <Layout>
       <section className="mx-auto max-w-[872px] w-full">
@@ -111,10 +105,10 @@ export default function Home() {
                 <div key={index} className="border-t border-neutral-700 py-4">
                   <div className="flex gap-5 items-start justify-between mb-3">
                     <div>
-                      <h3>{item.attributes.title}</h3>
+                      <h3>{item.title}</h3>
                     </div>
                     <div className="flex gap-2 ">
-                      <p>{item.attributes.createdAt}</p>
+                      <p>{item.createdAt}</p>
                       <div>
                         <Link
                           className="hover:cursor-pointer w-min"
@@ -126,7 +120,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="markdown">
-                    <ReactMarkdown>{item.attributes.body}</ReactMarkdown>
+                    <ReactMarkdown>{item.body}</ReactMarkdown>
                   </div>
                 </div>
               );
