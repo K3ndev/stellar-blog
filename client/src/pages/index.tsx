@@ -1,8 +1,9 @@
-import { useRef, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useQuery, gql, useMutation } from "@apollo/client";
 import { Layout } from "../components/index";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
 
 const BLOGS_QUERY = gql`
   query blogs{
@@ -46,6 +47,9 @@ const CREATE_BLOG = gql`
 export default function Home() {
   const { loading, data } = useQuery(BLOGS_QUERY);
 
+  const { userId } = useAuth();
+  const [message, setMessage] = useState<string>()
+
   // create
   const titleRef = useRef<HTMLInputElement>(null);
   const messageRef = useRef<HTMLInputElement>(null);
@@ -60,14 +64,19 @@ export default function Home() {
   ) => {
     event.preventDefault();
 
-    if (!titleRef.current || !messageRef.current || !ratingRef.current) {
-      console.error("invalid");
+    if(!userId){
+      setMessage('You should login first')
       return;
     }
 
-    const title = titleRef.current.value;
-    const message = messageRef.current.value;
-    const rating = +ratingRef.current.value;
+    if (titleRef.current!.value === '' || messageRef.current!.value === '' || ratingRef.current!.value === '') {
+      setMessage('invalid input')
+      return;
+    }
+
+    const title = titleRef.current!.value;
+    const message = messageRef.current!.value;
+    const rating = +ratingRef.current!.value;
 
     // this code will refetch blogsQuery
     // refetchQueries: [{ query: blogsQuery }]
@@ -85,13 +94,20 @@ export default function Home() {
       });
 
       // Clear input fields
-      titleRef.current.value = "";
-      messageRef.current.value = "";
-      ratingRef.current.value = "";
+      titleRef.current!.value = "";
+      messageRef.current!.value = "";
+      ratingRef.current!.value = "";
+      setMessage("")
     } catch (_) {
       console.error("Error creating blog");
+      setMessage('Server error')
     }
   };
+
+
+  useEffect(() => {
+    setMessage("")
+  }, [userId])
 
   return (
     <Layout>
@@ -160,6 +176,7 @@ export default function Home() {
             />
           </label>
           <button type="submit">Submit</button>
+          <p className="text-red-500">{message}</p>
         </form>
       </section>
     </Layout>

@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.16",
+    "@clerk/nextjs": "^4.25.1",
+    "@mantine/hooks": "^7.1.2",
     "@types/node": "20.3.3",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
