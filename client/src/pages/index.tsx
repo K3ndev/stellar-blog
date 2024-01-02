@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { useQuery, gql, useMutation } from "@apollo/client";
 import { Layout } from "../components/index";
 import ReactMarkdown from "react-markdown";
@@ -47,7 +47,7 @@ const CREATE_BLOG = gql`
 export default function Home() {
   const { loading, data } = useQuery(BLOGS_QUERY);
 
-  const { userId } = useAuth();
+  const { userId, isSignedIn } = useAuth();
   const [message, setMessage] = useState<string>()
 
   // create
@@ -56,7 +56,7 @@ export default function Home() {
   const ratingRef = useRef<HTMLInputElement>(null);
   const [
     createBlog,
-    { loading: createLoading , data: createData },
+    { loading: createLoading, data: createData },
   ] = useMutation(CREATE_BLOG);
 
   const handleCreateSubmit = async (
@@ -64,7 +64,7 @@ export default function Home() {
   ) => {
     event.preventDefault();
 
-    if(!userId){
+    if (!userId) {
       setMessage('You should login first')
       return;
     }
@@ -104,15 +104,12 @@ export default function Home() {
     }
   };
 
-
-  useEffect(() => {
-    setMessage("")
-  }, [userId])
-
   return (
     <Layout>
       <section className="mx-auto max-w-[872px] w-full">
         <h1 className="my-10">Post</h1>
+
+        {/* add loading state */}
         <div className="text-neutral-400">
           {data &&
             !loading &&
@@ -143,42 +140,47 @@ export default function Home() {
             })}
         </div>
       </section>
-      <section className="mx-auto max-w-[872px] w-full">
-        <hr />
-        <div>create</div>
-        <form onSubmit={handleCreateSubmit}>
-          <label htmlFor="title">
-            <input
-              type="text"
-              className="block mb-1 text-black"
-              placeholder="title"
-              ref={titleRef}
-              id="title"
-            />
-          </label>
-          <label htmlFor="message">
-            <input
-              type="text"
-              className="block mb-1 text-black"
-              placeholder="message"
-              ref={messageRef}
-              id="message"
-            />
-          </label>
-          <label htmlFor="rating">
-            <input
-              type="number"
-              className="block mb-1 text-black"
-              placeholder="rating"
-              ref={ratingRef}
-              id="rating"
-              max={10}
-            />
-          </label>
-          <button type="submit">Submit</button>
-          <p className="text-red-500">{message}</p>
-        </form>
-      </section>
+
+      {/* form */}
+      {isSignedIn && data &&
+        <section className="mx-auto max-w-[872px] w-full">
+          <hr />
+          <div>create</div>
+          <form onSubmit={handleCreateSubmit}>
+            <label htmlFor="title">
+              <input
+                type="text"
+                className="block mb-1 text-black"
+                placeholder="title"
+                ref={titleRef}
+                id="title"
+              />
+            </label>
+            <label htmlFor="message">
+              <input
+                type="text"
+                className="block mb-1 text-black"
+                placeholder="message"
+                ref={messageRef}
+                id="message"
+              />
+            </label>
+            <label htmlFor="rating">
+              <input
+                type="number"
+                className="block mb-1 text-black"
+                placeholder="rating"
+                ref={ratingRef}
+                id="rating"
+                max={10}
+              />
+            </label>
+            <button type="submit">Submit</button>
+            <p className="text-red-500">{message}</p>
+          </form>
+        </section>
+      }
+
     </Layout>
   );
 }

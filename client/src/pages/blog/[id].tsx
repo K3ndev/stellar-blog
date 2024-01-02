@@ -123,7 +123,7 @@ export default function Page() {
       <Layout>
         <section className="mx-auto max-w-[872px] w-full">
           <div className="flex justify-between my-10">
-            <h1 className="">Post</h1>
+            <h1 className="">Post of sampleID</h1>
 
             <div>
               <button
@@ -213,3 +213,8 @@ export default function Page() {
     );
   }
 }
+
+
+// todo 
+// try to sign out in one of the blog page
+// then it will show a bug
