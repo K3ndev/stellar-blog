@@ -73,11 +73,16 @@ export function InputForm() {
                 },
                 refetchQueries: [{ query: BLOGS_QUERY }],
             });
-            console.log('jo')
 
             titleRef.current!.value = "";
             messageRef.current!.value = "";
             ratingRef.current!.value = "";
+
+            form.reset({
+                title: "",
+                message: "",
+                rating: "0",
+            });
 
         } catch (_) {
             console.log('error');
