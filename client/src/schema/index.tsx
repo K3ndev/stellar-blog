@@ -38,3 +38,35 @@ export const CREATE_BLOG = gql`
     }
   }
 `;
+
+export const GET_SINGLE_BLOG = gql`
+  query getSingleBlog($id: Int!) {
+    getSingleBlog(id: $id) {
+      id
+      body
+      createdAt
+      updatedAt
+      rating
+      title
+    }
+  }
+`;
+
+
+export const DELETE_SINGLE_BLOG = gql`
+  mutation DeleteBlog($id: Int!) {
+    deleteBlog(id: $id) {
+      id
+    }
+  }
+`;
+
+export const UPDATE_SINGLE_BLOG = gql`
+  mutation updateBlog($input: BlogUpdateInput!, $updateBlogId: Int!) {
+    updateBlog(input: $input, id: $updateBlogId) {
+      body,
+      rating,
+      title
+    }
+  }
+`;

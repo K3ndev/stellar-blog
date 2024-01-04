@@ -3,38 +3,7 @@ import { useQuery, gql, useMutation } from "@apollo/client";
 import { Layout } from "../../components/index";
 import ReactMarkdown from "react-markdown";
 import { useState, useEffect } from "react";
-
-const GET_SINGLE_BLOG = gql`
-  query getSingleBlog($id: Int!) {
-    getSingleBlog(id: $id) {
-      id
-      body
-      createdAt
-      updatedAt
-      rating
-      title
-    }
-  }
-`;
-
-
-const DELETE_SINGLE_BLOG = gql`
-  mutation DeleteBlog($id: Int!) {
-    deleteBlog(id: $id) {
-      id
-    }
-  }
-`;
-
-const UPDATE_SINGLE_BLOG = gql`
-  mutation updateBlog($input: BlogUpdateInput!, $updateBlogId: Int!) {
-    updateBlog(input: $input, id: $updateBlogId) {
-      body,
-      rating,
-      title
-    }
-  }
-`;
+import { GET_SINGLE_BLOG, DELETE_SINGLE_BLOG, UPDATE_SINGLE_BLOG} from "../../schema/index"
 
 export default function Page() {
   const router = useRouter();
