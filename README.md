@@ -1,9 +1,10 @@
 # [Video url - preview](https://drive.google.com/file/d/1ZBM3ehbmZv8D1BGzq6MjH_P8W1AjYcH7/view)
 
 
-# Overview
-This project consists of two main services and a mock database setup for development purposes. Here's a brief description of each service:
+# Here's a brief description of each service:
+This project consists of two main services and a docker setup for database and clerk for auth and user management.
 
 1. `client`: Handles the client-side user interface.
-2. `server-graphql`: Manages Express server with prisma ORM and clerk for auth.
-4. `mock-db`: A docker-based mock database (postgres) setup for development.
+2. `server-graphql`: Manages Express with prisma and graphql.
+3. `mock-db`: A docker-setup for database (postgres).
+4. `auth`: clerk for handling auth and user management.
