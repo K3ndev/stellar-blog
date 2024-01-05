@@ -1,9 +1,11 @@
 import { useRouter } from "next/router";
-import { useQuery, gql, useMutation } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import { Layout } from "../../components/index";
 import ReactMarkdown from "react-markdown";
 import { useState, useEffect } from "react";
 import { GET_SINGLE_BLOG, DELETE_SINGLE_BLOG, UPDATE_SINGLE_BLOG} from "../../schema/index"
+import { Loader2 } from 'lucide-react';
+
 
 export default function Page() {
   const router = useRouter();
@@ -19,6 +21,7 @@ export default function Page() {
   const [titleInputState, setTitleInputState] = useState<string>("");
   const [bodyInputState, setBodyInputState] = useState<string>("");
   const [ratingInputState, setRatingInputState] = useState<number>();
+  const [delayLoading, setDelayLoading] = useState(true);
 
 
   // for a single blog
@@ -66,6 +69,16 @@ export default function Page() {
     }
   }, [data, isEdit]);
 
+  // useEffect for delaying the loading state
+  useEffect(() => {
+    const timer = setTimeout(() => setDelayLoading(false), 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+
+  }, [loading]);
+
   // UI
   if (data?.blog?.data === null || error) {
     return (
@@ -77,11 +90,11 @@ export default function Page() {
     );
   }
 
-  if (loading) {
+  if (delayLoading) {
     return (
       <Layout>
-        <section className="mx-auto max-w-[872px] w-full">
-          <p>loading</p>
+        <section className="mx-auto max-w-[872px] w-full flex justify-center my-20">
+          <Loader2 className="animate-spin" />
         </section>
       </Layout>
     );
