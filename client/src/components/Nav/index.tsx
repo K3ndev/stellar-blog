@@ -40,7 +40,7 @@ export const Header = () => {
     
     <header className="mx-auto max-w-[872px] w-full">
       <nav className="flex justify-between my-3">
-        <Link href="/">STRAPI BLOGS</Link>
+        <Link href="/">Stellar Blogs</Link>
         <ul className="flex gap-4">
           {!userId && 
            <>
