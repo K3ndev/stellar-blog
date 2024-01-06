@@ -4,6 +4,7 @@ export const BLOGS_QUERY = gql`
   query blogs{
     blogs {
       id,
+      username,
       body,
       createdAt,
       updatedAt,
@@ -16,6 +17,7 @@ export const BLOGS_QUERY = gql`
 export const CREATE_BLOG = gql`
   mutation CreateBlog(
     $title: String!,
+    $username: String!,
     $body: String!,
     $rating: Int!,
     $createdAt: DateTime!,
@@ -24,6 +26,7 @@ export const CREATE_BLOG = gql`
     createBlog(
       input: {
         title: $title,
+        username: $username
         body: $body,
         rating: $rating,
         createdAt: $createdAt,
@@ -43,6 +46,7 @@ export const GET_SINGLE_BLOG = gql`
   query getSingleBlog($id: Int!) {
     getSingleBlog(id: $id) {
       id
+      username
       body
       createdAt
       updatedAt

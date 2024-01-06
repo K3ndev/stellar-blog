@@ -3,8 +3,9 @@ import { useQuery, useMutation } from "@apollo/client";
 import { Layout } from "../../components/index";
 import ReactMarkdown from "react-markdown";
 import { useState, useEffect } from "react";
-import { GET_SINGLE_BLOG, DELETE_SINGLE_BLOG, UPDATE_SINGLE_BLOG} from "../../schema/index"
+import { GET_SINGLE_BLOG, DELETE_SINGLE_BLOG, UPDATE_SINGLE_BLOG } from "../../schema/index"
 import { Loader2 } from 'lucide-react';
+import { useAuth } from "@clerk/nextjs";
 
 
 export default function Page() {
@@ -15,6 +16,9 @@ export default function Page() {
     if (!match) return "invalid";
     return match[1].toString();
   };
+
+  const { isSignedIn } = useAuth();
+
 
   // states
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -105,36 +109,38 @@ export default function Page() {
       <Layout>
         <section className="mx-auto max-w-[872px] w-full">
           <div className="flex justify-between my-10">
-            <h1 className="">Post of sampleID</h1>
+            <h1 className="">Posted by {data?.getSingleBlog.username}</h1>
 
-            <div>
-              <button
-                className="bg-red-500 px-2 py-1 text-white"
-                onClick={() => {
-                  deleteBlog();
-                }}
-              >
-                Delete
-              </button>
-              <button
-                className="bg-green-500 px-2 py-1 text-white"
-                onClick={() => {
-                  setIsEdit(!isEdit);
-                  refetch()
-                }}
-              >
-                Toggle Edit
-              </button>
-              <button
-                disabled={!isEdit}
-                className="bg-blue-500 px-2 py-1 text-white"
-                onClick={() => {
-                  updateBlog();
-                }}
-              >
-                Save
-              </button>
-            </div>
+            {isSignedIn &&
+              <div>
+                <button
+                  className="bg-red-500 px-2 py-1 text-white"
+                  onClick={() => {
+                    deleteBlog();
+                  }}
+                >
+                  Delete
+                </button>
+                <button
+                  className="bg-green-500 px-2 py-1 text-white"
+                  onClick={() => {
+                    setIsEdit(!isEdit);
+                    refetch()
+                  }}
+                >
+                  Toggle Edit
+                </button>
+                <button
+                  disabled={!isEdit}
+                  className="bg-blue-500 px-2 py-1 text-white"
+                  onClick={() => {
+                    updateBlog();
+                  }}
+                >
+                  Save
+                </button>
+              </div>
+            }
           </div>
           <div className="text-neutral-400">
             <div className="border-t border-neutral-700 py-4">
@@ -166,7 +172,7 @@ export default function Page() {
                       onChange={(e) => setBodyInputState(e.currentTarget.value)}
                     />
                   </label>
-                  
+
                 </div>
               ) : (
                 <div className="markdown">
@@ -187,7 +193,7 @@ export default function Page() {
                     />
                   </label>
                 </div>
-              ) }
+              )}
             </div>
           </div>
         </section>

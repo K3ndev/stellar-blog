@@ -5,6 +5,7 @@ export const typeDefs = `#graphql
 
   type Blog {
     id: Int
+    username: String
     title: String!
     rating: Int
     body: String
@@ -19,6 +20,7 @@ export const typeDefs = `#graphql
 
   input BlogCreateInput {
     title: String!
+    username: String
     rating: Int
     body: String
     createdAt: DateTime

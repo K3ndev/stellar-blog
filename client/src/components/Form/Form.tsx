@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { useRef } from "react"
 import { BLOGS_QUERY, CREATE_BLOG } from "../../schema/index"
+import { useAuth } from "@clerk/nextjs";
 
 import { Button } from "@/components/ui/button"
 import {
@@ -36,6 +37,7 @@ export function InputForm() {
     const messageRef = useRef<HTMLInputElement>(null);
     const ratingRef = useRef<HTMLInputElement>(null);
 
+    const { userId } = useAuth();
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -66,6 +68,7 @@ export function InputForm() {
             const response = await createBlog({
                 variables: {
                     title: titleRef.current!.value,
+                    username: userId,
                     body: messageRef.current!.value,
                     rating: +ratingRef.current!.value,
                     createdAt: new Date().toISOString(),

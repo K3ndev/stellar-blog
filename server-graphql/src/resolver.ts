@@ -8,6 +8,7 @@ export const resolvers = {
             const getBlogs = async() => {
                 const blogs = await db.blog.findMany({select: {
                     id: true,
+                    username: true,
                     title: true,
                     rating: true,
                     body: true,

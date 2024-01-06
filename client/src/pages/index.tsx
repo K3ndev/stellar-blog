@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { Layout, InputForm } from "../components/index";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
