@@ -14,9 +14,9 @@ export default function Admin() {
 
 export const getServerSideProps = withServerSideAuth(({ req }) => {
     const { userId } = req.auth;
+    const adminID = process.env.AdminID
 
-    if (userId !== "user_2VOHqByWqaPG61qTEDKWWE8rK0w") {
-        console.log('hi admin')
+    if (userId !== adminID) {
         return{
             redirect: {
                 destination: '/',
@@ -25,6 +25,6 @@ export const getServerSideProps = withServerSideAuth(({ req }) => {
         }
     }
 
-    // dont fetch data in ssr, its sucks
+    // don't fetch data in ssr, its sucks
     return { props: {} };
 });
