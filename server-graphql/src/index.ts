@@ -2,8 +2,8 @@
 // import cors from "cors";
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import { typeDefs } from './schema'
-import { resolvers } from './resolver'
+import { typeDefs } from './schema.js'
+import { resolvers } from './resolver.js'
 
 const createApolloServer = () => {
     return new ApolloServer({
