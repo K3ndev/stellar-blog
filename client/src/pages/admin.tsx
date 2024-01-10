@@ -2,7 +2,7 @@ import { Layout } from "../components/index";
 import { withServerSideAuth } from "@clerk/nextjs/ssr";
 
 
-export default function Document() {
+export default function Admin() {
 
     return (
         <Layout>
@@ -14,8 +14,6 @@ export default function Document() {
 
 export const getServerSideProps = withServerSideAuth(({ req }) => {
     const { userId } = req.auth;
-
-    console.log(userId)
 
     if (userId !== "user_2VOHqByWqaPG61qTEDKWWE8rK0w") {
         console.log('hi admin')
