@@ -21,7 +21,7 @@ export const CREATE_BLOG = gql`
     $body: String!,
     $rating: Int!,
     $createdAt: DateTime!,
-    $updatedAt: DateTime!,
+    $updatedAt: DateTime!
   ) {
     createBlog(
       input: {
