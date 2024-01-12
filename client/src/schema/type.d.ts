@@ -1,4 +1,4 @@
-export type Blog = {
+export type BlogType = {
     id: string;
     username: string;
     body: string;
@@ -8,7 +8,7 @@ export type Blog = {
     title: string;
 };
 
-export type BlogInput = {
+export type BlogInputType = {
     title: string;
     username: string;
     body: string;
@@ -17,7 +17,7 @@ export type BlogInput = {
     updatedAt: string;
 };
 
-export type BlogUpdateInput = {
+export type BlogUpdateInputType = {
     body?: string;
     rating?: number;
     title?: string;

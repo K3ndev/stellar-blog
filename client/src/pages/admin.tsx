@@ -1,13 +1,13 @@
 import { Layout } from "../components/index";
 import { withServerSideAuth } from "@clerk/nextjs/ssr";
-import { DataTable } from '../components/Dashboard/index'
+import { DashBoard } from '../components/Dashboard/index'
 
 export default function Admin() {
 
     return (
         <Layout>
             <section className="mx-auto max-w-[872px] w-full">
-                <DataTable />
+                <DashBoard />
             </section>
         </Layout>
     )

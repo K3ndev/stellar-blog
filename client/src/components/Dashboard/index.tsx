@@ -36,83 +36,93 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useQuery } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import { BLOGS_QUERY } from "../../schema/index";
-import { Blog, BlogInput, BlogUpdateInput } from "../../schema/type";
+import { DELETE_SINGLE_BLOG } from "../../schema/index"
+import { BlogType } from '../../schema/type'
 
+export const useDeleteBlog = () => {
+  const [deleteBlogMutation] = useMutation(DELETE_SINGLE_BLOG);
+   const { refetch } = useQuery(BLOGS_QUERY);
 
-export type blogType = {
-  id: string
-  createdAt: string
-  rating: number
-  title: string
-  username: string
-  body: string
-}
+  const deleteBlog = async (blogId: number) => {
+    try {
+      await deleteBlogMutation({ variables: { id: blogId } });
+      await refetch()
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-export const columns: ColumnDef<blogType>[] = [
-  {
-    accessorKey: "username",
-    header: "Username",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("username")}</div>
-    ),
-  },
-  {
-    accessorKey: "title",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Title
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("title")}</div>,
-  },
-  {
-    accessorKey: "body",
-    header: "Body",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("body")}</div>
-    ),
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const payment = row.original
+  return { deleteBlog };
+};
 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy blog ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
-  },
-]
-
-export function DataTable() {
+export function DashBoard() {
 
   const { loading, data } = useQuery(BLOGS_QUERY);
+  const { deleteBlog } = useDeleteBlog()
+
+  const columns: ColumnDef<BlogType>[] = [
+    {
+      accessorKey: "username",
+      header: "Username",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("username")}</div>
+      ),
+    },
+    {
+      accessorKey: "title",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Title
+            <CaretSortIcon className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <div className="lowercase">{row.getValue("title")}</div>,
+    },
+    {
+      accessorKey: "body",
+      header: "Body",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("body")}</div>
+      ),
+    },
+    {
+      id: "actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const payment = row.original
+  
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <DotsHorizontalIcon className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(payment.id)}
+              >
+                Copy blog ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => {
+                deleteBlog(+payment.id)
+              }}>Delete</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      },
+    },
+  ]
 
 
   const [sorting, setSorting] = React.useState<SortingState>([])
