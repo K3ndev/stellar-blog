@@ -2,6 +2,8 @@ import React, {useState, useEffect} from "react";
 import Link from "next/link";
 import { SignUp, SignIn, useAuth, SignOutButton } from "@clerk/nextjs";
 import { useClickOutside } from '@mantine/hooks';
+import { useFetchSessionData } from '../../hooks/useFetchSessionData'
+
 
 export const Header = () => {
 
@@ -10,16 +12,17 @@ export const Header = () => {
   const refSignIn = useClickOutside(() => setOpenedSignIn(false));
   const refSignUp = useClickOutside(() => setOpenedSignUp(false));
 
-  const { userId } = useAuth();
+  const { isSignedIn } = useAuth();
+  const { data } = useFetchSessionData()
 
 
   useEffect(() => {
-    if(userId){
+    if(isSignedIn){
       setOpenedSignUp(false)
       setOpenedSignIn(false)
     }
 
-  }, [userId])
+  }, [isSignedIn])
 
   return (
     <>
@@ -42,7 +45,7 @@ export const Header = () => {
       <nav className="flex justify-between my-3">
         <Link href="/">Stellar Blogs</Link>
         <ul className="flex gap-4">
-          {!userId && 
+          {!isSignedIn && 
            <>
             <li>
             <p onClick={() => {setOpenedSignIn(!openedSignIn)}} className="cursor-pointer">SignIn</p>
@@ -52,9 +55,9 @@ export const Header = () => {
           </li>
            </>
           }
-          {userId && 
+          {isSignedIn && 
             <>
-            <p>{userId}</p>
+            <p>{data?.sessionClaims.username}</p>
             <SignOutButton />
             </>
           }

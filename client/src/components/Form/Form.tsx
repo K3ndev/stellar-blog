@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { useRef } from "react"
 import { BLOGS_QUERY, CREATE_BLOG } from "../../schema/index"
-import { useAuth } from "@clerk/nextjs";
 
 import { Button } from "@/components/ui/button"
 import {
@@ -17,6 +16,8 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
+import { useFetchSessionData } from '../../hooks/useFetchSessionData'
+
 
 const FormSchema = z.object({
     title: z.string().min(3, {
@@ -37,7 +38,7 @@ export function InputForm() {
     const messageRef = useRef<HTMLInputElement>(null);
     const ratingRef = useRef<HTMLInputElement>(null);
 
-    const { userId } = useAuth();
+    const { data: sessionData } = useFetchSessionData();
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -68,7 +69,7 @@ export function InputForm() {
             const response = await createBlog({
                 variables: {
                     title: titleRef.current!.value,
-                    username: userId,
+                    username: sessionData?.sessionClaims.username,
                     body: messageRef.current!.value,
                     rating: +ratingRef.current!.value,
                     createdAt: new Date().toISOString(),
