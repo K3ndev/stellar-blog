@@ -38,6 +38,7 @@ export function InputForm() {
     const messageRef = useRef<HTMLInputElement>(null);
     const ratingRef = useRef<HTMLInputElement>(null);
 
+    // todo use swr here, but im getting typescript error
     const { data: sessionData } = useFetchSessionData();
 
     const form = useForm<z.infer<typeof FormSchema>>({
@@ -66,7 +67,7 @@ export function InputForm() {
         });
 
         try {
-            const response = await createBlog({
+            await createBlog({
                 variables: {
                     title: titleRef.current!.value,
                     username: sessionData?.sessionClaims.username,

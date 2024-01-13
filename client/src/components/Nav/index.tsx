@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { SignUp, SignIn, useAuth, SignOutButton } from "@clerk/nextjs";
 import { useClickOutside } from '@mantine/hooks';
-import { useFetchSessionData } from '../../hooks/useFetchSessionData'
+import useSWR from "swr";
 
 
 export const Header = () => {
@@ -13,8 +13,8 @@ export const Header = () => {
   const refSignUp = useClickOutside(() => setOpenedSignUp(false));
 
   const { isSignedIn } = useAuth();
-  const { data } = useFetchSessionData()
-
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  const { data } = useSWR('/api/session', () => fetcher('/api/session'))
 
   useEffect(() => {
     if(isSignedIn){
