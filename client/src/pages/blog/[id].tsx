@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { GET_SINGLE_BLOG, DELETE_SINGLE_BLOG, UPDATE_SINGLE_BLOG } from "../../schema/index"
 import { Loader2 } from 'lucide-react';
 import { useAuth } from "@clerk/nextjs";
-
+import useSWR from "swr";
 
 export default function Page() {
   const router = useRouter();
@@ -18,6 +18,8 @@ export default function Page() {
   };
 
   const { isSignedIn } = useAuth();
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  const { data: sessionData } = useSWR('/api/session', () => fetcher('/api/session'))
 
 
   // states
@@ -35,7 +37,7 @@ export default function Page() {
 
   // for deleting a blog
   const [deleteBlog] = useMutation(DELETE_SINGLE_BLOG, {
-    variables: { id: +idFromPath() },
+    variables: { id: +idFromPath(), username: sessionData?.sessionClaims?.username},
     onError: (err) => {
       console.error(err);
     },
@@ -53,6 +55,7 @@ export default function Page() {
         rating: ratingInputState,
       },
       updateBlogId: +idFromPath(),
+      username: sessionData?.sessionClaims?.username
     },
     refetchQueries: [
       { query: GET_SINGLE_BLOG, variables: { id: +idFromPath() } },
@@ -64,6 +67,13 @@ export default function Page() {
       setIsEdit(false);
     },
   });
+
+  const authorize = () => {
+    if (sessionData?.sessionClaims?.username === data.getSingleBlog.username) {
+      return true
+    }
+    return false
+  }
 
   useEffect(() => {
     if (data?.getSingleBlog) {
@@ -111,7 +121,7 @@ export default function Page() {
           <div className="flex justify-between my-10">
             <h1 className="">Posted by {data?.getSingleBlog.username}</h1>
 
-            {isSignedIn &&
+            {isSignedIn && authorize() &&
               <div>
                 <button
                   className="bg-red-500 px-2 py-1 text-white"

@@ -58,16 +58,16 @@ export const GET_SINGLE_BLOG = gql`
 
 
 export const DELETE_SINGLE_BLOG = gql`
-  mutation DeleteBlog($id: Int!) {
-    deleteBlog(id: $id) {
+  mutation DeleteBlog($id: Int!, $username: String!) {
+    deleteBlog(id: $id, username: $username) {
       id
     }
   }
 `;
 
 export const UPDATE_SINGLE_BLOG = gql`
-  mutation updateBlog($input: BlogUpdateInput!, $updateBlogId: Int!) {
-    updateBlog(input: $input, id: $updateBlogId) {
+  mutation updateBlog($input: BlogUpdateInput!, $updateBlogId: Int!, $username: String!) {
+    updateBlog(input: $input, id: $updateBlogId, username: $username) {
       body,
       rating,
       title
