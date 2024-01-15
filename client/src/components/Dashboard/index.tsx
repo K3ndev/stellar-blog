@@ -40,6 +40,8 @@ import { useQuery, useMutation } from "@apollo/client";
 import { BLOGS_QUERY } from "../../schema/index";
 import { DELETE_SINGLE_BLOG } from "../../schema/index"
 import { BlogType } from '../../schema/type'
+import { Loader2 } from 'lucide-react';
+import { useEffect, useState } from "react"
 
 export const useDeleteBlog = () => {
   const [deleteBlogMutation] = useMutation(DELETE_SINGLE_BLOG);
@@ -61,6 +63,7 @@ export function DashBoard() {
 
   const { loading, data } = useQuery(BLOGS_QUERY);
   const { deleteBlog } = useDeleteBlog()
+  const [delayLoading, setDelayLoading] = useState(true);
 
   const columns: ColumnDef<BlogType>[] = [
     {
@@ -152,10 +155,22 @@ export function DashBoard() {
     },
   })
 
+  // useEffect for delaying the loading state
+  useEffect(() => {
+    const timer = setTimeout(() => setDelayLoading(false), 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+
+  }, [loading]);
+
   // todo add some loading state loading ui
-  if (loading) {
+  if (delayLoading) {
     return (
-      <div>loading</div>
+      <div className="flex justify-center py-9 border-t border-b border-neutral-700">
+        <Loader2 className="animate-spin" />
+      </div>
     )
   }
 
