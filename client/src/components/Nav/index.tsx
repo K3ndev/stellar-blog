@@ -11,13 +11,29 @@ export const Header = () => {
   const [openedSignUp, setOpenedSignUp] = useState<boolean>(false);
   const refSignIn = useClickOutside(() => setOpenedSignIn(false));
   const refSignUp = useClickOutside(() => setOpenedSignUp(false));
+  const [username, setUsername] = useState<string>('')
 
   const { isSignedIn } = useAuth();
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data } = useSWR('/api/session', () => fetcher('/api/session'))
 
   useEffect(() => {
+
+    const fetchSession = async () => {
+      try {
+        const response = await fetch('/api/session');
+        if (response.ok) {
+          const data = await response.json();
+          setUsername(data?.sessionClaims.username);
+        } else {
+          console.error('Error fetching session data');
+        }
+      } catch (error) {
+        console.error('Error fetching session data', error);
+      }
+    };
+
     if(isSignedIn){
+      fetchSession()
       setOpenedSignUp(false)
       setOpenedSignIn(false)
     }
@@ -57,7 +73,7 @@ export const Header = () => {
           }
           {isSignedIn && 
             <>
-            <p>{data?.sessionClaims.username}</p>
+            <p>{username || ''}</p>
             <SignOutButton />
             </>
           }
