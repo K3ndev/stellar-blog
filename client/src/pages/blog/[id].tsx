@@ -7,6 +7,8 @@ import { GET_SINGLE_BLOG, DELETE_SINGLE_BLOG, UPDATE_SINGLE_BLOG } from "../../s
 import { Loader2 } from 'lucide-react';
 import { useAuth } from "@clerk/nextjs";
 import useSWR from "swr";
+import { useFetchToken } from "@/hooks/useFetchToken";
+
 
 export default function Page() {
   const router = useRouter();
@@ -17,10 +19,10 @@ export default function Page() {
     return match[1].toString();
   };
 
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, sessionId, getToken, userId } = useAuth();
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data: sessionData } = useSWR('/api/session', () => fetcher('/api/session'))
-
+  const { token } = useFetchToken()
 
   // states
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -28,7 +30,6 @@ export default function Page() {
   const [bodyInputState, setBodyInputState] = useState<string>("");
   const [ratingInputState, setRatingInputState] = useState<number>();
   const [delayLoading, setDelayLoading] = useState(true);
-
 
   // for a single blog
   const { data, loading, error, refetch } = useQuery(GET_SINGLE_BLOG, {
@@ -38,6 +39,11 @@ export default function Page() {
   // for deleting a blog
   const [deleteBlog] = useMutation(DELETE_SINGLE_BLOG, {
     variables: { id: +idFromPath(), username: sessionData?.sessionClaims?.username},
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    },
     onError: (err) => {
       console.error(err);
     },
@@ -56,6 +62,11 @@ export default function Page() {
       },
       updateBlogId: +idFromPath(),
       username: sessionData?.sessionClaims?.username
+    },
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
     },
     refetchQueries: [
       { query: GET_SINGLE_BLOG, variables: { id: +idFromPath() } },

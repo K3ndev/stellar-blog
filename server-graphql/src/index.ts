@@ -5,7 +5,7 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 
-import { typeDefs } from './schema';
+import { typeDefs } from './schema.js';
 import { resolvers } from './resolver.js'
 
 const app = express();
@@ -15,8 +15,8 @@ const server = new ApolloServer({
     resolvers,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     // if true, it gives autosuggest but its giving information disclosure
-    introspection: false,
-    csrfPrevention: true
+    introspection: true,
+    csrfPrevention: true,
 });
 
 await server.start();
@@ -31,7 +31,9 @@ app.use(
     '/',
     cors<cors.CorsRequest>(corsOptions),
     express.json(),
-    expressMiddleware(server),
+    expressMiddleware(server, {
+        context: async ({ req }) => ({ token: req.headers.authorization }),
+    }),
 );
 
 await new Promise<void>((resolve) => httpServer.listen({ port: 1337 }, resolve));

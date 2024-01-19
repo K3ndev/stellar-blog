@@ -30,13 +30,18 @@ export const resolvers = {
         },
     },
     Mutation: {
-        createBlog: async(_: any, { input }: any) => {
+        createBlog: async(_: any, { input }: any, context: any) => {
+
+            console.log(context)
+
             const newBlog = await db.blog.create({data: input,});
             return newBlog;
         },
 
-        updateBlog: async (_: any, { input, id, username }: any) => {
+        updateBlog: async (_:any, { input, id, username }:any, context: any) => {
 
+            console.log(context)
+            
             const blog = await db.blog.findUnique({ where: { id } });
 
             // Check if the blog exists
@@ -63,7 +68,9 @@ export const resolvers = {
 
         },
 
-        deleteBlog: async (_: any, { id, username }: { id: number, username: string }) => {
+        deleteBlog: async (_: any, { id, username }: { id: number, username: string }, context: any) => {
+
+            console.log(context)
 
             const blog = await db.blog.findUnique({ where: { id } });
 

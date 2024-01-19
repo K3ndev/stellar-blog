@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import { useFetchSessionData } from '../../hooks/useFetchSessionData'
+import { useFetchToken } from "@/hooks/useFetchToken";
 
 
 const FormSchema = z.object({
@@ -33,6 +34,8 @@ const FormSchema = z.object({
 
 export function InputForm() {
 
+    // tokens
+    const { token } = useFetchToken()
 
     const titleRef = useRef<HTMLInputElement>(null);
     const messageRef = useRef<HTMLInputElement>(null);
@@ -75,6 +78,11 @@ export function InputForm() {
                     rating: +ratingRef.current!.value,
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
+                },
+                context: {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
                 },
                 refetchQueries: [{ query: BLOGS_QUERY }],
             });

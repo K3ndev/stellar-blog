@@ -47,9 +47,9 @@ export const useDeleteBlog = () => {
   const [deleteBlogMutation] = useMutation(DELETE_SINGLE_BLOG);
    const { refetch } = useQuery(BLOGS_QUERY);
 
-  const deleteBlog = async (blogId: number) => {
+  const deleteBlog = async (blogId: number, username: string) => {
     try {
-      await deleteBlogMutation({ variables: { id: blogId } });
+      await deleteBlogMutation({ variables: { id: blogId, username } });
       await refetch()
     } catch (error) {
       console.error(error);
@@ -118,7 +118,7 @@ export function DashBoard() {
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => {
-                deleteBlog(+payment.id)
+                deleteBlog(+payment.id, 'admin101')
               }}>Delete</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
