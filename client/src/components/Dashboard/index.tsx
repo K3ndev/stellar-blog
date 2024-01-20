@@ -42,14 +42,29 @@ import { DELETE_SINGLE_BLOG } from "../../schema/index"
 import { BlogType } from '../../schema/type'
 import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from "react"
+import useSWR from "swr"
 
 export const useDeleteBlog = () => {
   const [deleteBlogMutation] = useMutation(DELETE_SINGLE_BLOG);
-   const { refetch } = useQuery(BLOGS_QUERY);
+  const { refetch } = useQuery(BLOGS_QUERY);
+
+  const fetcherToken = (url: string) => fetch(url).then((res) => res.json());
+  const { data: tokenData } = useSWR('/api/token', fetcherToken);
 
   const deleteBlog = async (blogId: number, username: string) => {
     try {
-      await deleteBlogMutation({ variables: { id: blogId, username } });
+      await deleteBlogMutation(
+        {
+          variables: { id: blogId, username },
+          context: {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${tokenData?.token}`,
+              mode: "cors",
+            }
+          },
+        }
+      );
       await refetch()
     } catch (error) {
       console.error(error);
@@ -100,7 +115,7 @@ export function DashBoard() {
       enableHiding: false,
       cell: ({ row }) => {
         const payment = row.original
-  
+
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -118,7 +133,7 @@ export function DashBoard() {
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => {
-                deleteBlog(+payment.id, 'admin101')
+                deleteBlog(+payment.id, 'dashboard')
               }}>Delete</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
