@@ -1,5 +1,6 @@
 import { GraphQLDateTime } from "graphql-scalars";
 import { db } from "./utils.js"
+import { checkToken } from "./checkToken.js"
 
 export const resolvers = {
     DateTime: GraphQLDateTime,
@@ -32,7 +33,10 @@ export const resolvers = {
     Mutation: {
         createBlog: async(_: any, { input }: any, context: any) => {
 
-            console.log(context)
+            const tokenWithoutBearer = context.token.replace(/^Bearer\s/, '');
+            if(!checkToken(tokenWithoutBearer)){
+                return;
+            }
 
             const newBlog = await db.blog.create({data: input,});
             return newBlog;
@@ -40,7 +44,10 @@ export const resolvers = {
 
         updateBlog: async (_:any, { input, id, username }:any, context: any) => {
 
-            console.log(context)
+            const tokenWithoutBearer = context.token.replace(/^Bearer\s/, '');
+            if(!checkToken(tokenWithoutBearer)){
+                return;
+            }
             
             const blog = await db.blog.findUnique({ where: { id } });
 
@@ -70,7 +77,10 @@ export const resolvers = {
 
         deleteBlog: async (_: any, { id, username }: { id: number, username: string }, context: any) => {
 
-            console.log(context)
+            const tokenWithoutBearer = context.token.replace(/^Bearer\s/, '');
+            if(!checkToken(tokenWithoutBearer)){
+                return;
+            }
 
             const blog = await db.blog.findUnique({ where: { id } });
 

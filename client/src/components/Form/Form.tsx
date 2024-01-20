@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import { useFetchSessionData } from '../../hooks/useFetchSessionData'
-import { useFetchToken } from "@/hooks/useFetchToken";
+import useSWR from "swr";
 
 
 const FormSchema = z.object({
@@ -35,7 +35,8 @@ const FormSchema = z.object({
 export function InputForm() {
 
     // tokens
-    const { token } = useFetchToken()
+    const fetcherToken = (url: string) => fetch(url).then((res) => res.json());
+    const { data: tokenData } = useSWR('/api/token', fetcherToken);
 
     const titleRef = useRef<HTMLInputElement>(null);
     const messageRef = useRef<HTMLInputElement>(null);
@@ -81,7 +82,7 @@ export function InputForm() {
                 },
                 context: {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${tokenData?.token}`,
                     }
                 },
                 refetchQueries: [{ query: BLOGS_QUERY }],

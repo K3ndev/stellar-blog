@@ -7,7 +7,6 @@ import { GET_SINGLE_BLOG, DELETE_SINGLE_BLOG, UPDATE_SINGLE_BLOG } from "../../s
 import { Loader2 } from 'lucide-react';
 import { useAuth } from "@clerk/nextjs";
 import useSWR from "swr";
-import { useFetchToken } from "@/hooks/useFetchToken";
 
 
 export default function Page() {
@@ -19,10 +18,11 @@ export default function Page() {
     return match[1].toString();
   };
 
-  const { isSignedIn, sessionId, getToken, userId } = useAuth();
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data: sessionData } = useSWR('/api/session', () => fetcher('/api/session'))
-  const { token } = useFetchToken()
+  const { isSignedIn } = useAuth();
+  const fetcherSession = (url: string) => fetch(url).then((res) => res.json());
+  const { data: sessionData } = useSWR('/api/session', () => fetcherSession('/api/session'))
+  const fetcherToken = (url: string) => fetch(url).then((res) => res.json());
+  const { data: tokenData } = useSWR('/api/token', fetcherToken);
 
   // states
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -41,7 +41,9 @@ export default function Page() {
     variables: { id: +idFromPath(), username: sessionData?.sessionClaims?.username},
     context: {
       headers: {
-        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokenData?.token}`,
+        mode: "cors",
       }
     },
     onError: (err) => {
@@ -65,7 +67,7 @@ export default function Page() {
     },
     context: {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${tokenData?.token}`,
       }
     },
     refetchQueries: [
